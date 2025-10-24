@@ -8,10 +8,10 @@ Nadi is a full-stack web application that helps users in Beirut reserve sports c
 nadi/
 ├── backend/                 # Spring Boot backend
 │   ├── src/main/java/com/nadi/
-│   │   ├── user/           # User management
-│   │   ├── venue/          # Venue and court management
-│   │   ├── reservation/    # Booking system
-│   │   ├── search/         # Search functionality
+│   │   ├── controller/      # REST controllers
+│   │   ├── model/          # JPA entities
+│   │   ├── repository/     # Data access layer
+│   │   ├── service/        # Business logic layer
 │   │   └── MainApplication.java
 │   ├── pom.xml
 │   └── README.md
@@ -90,6 +90,8 @@ nadi/
 - ✅ TypeScript type definitions
 - ✅ API service layer
 - ✅ Basic welcome page
+- ✅ JPA entities with proper relationships
+- ✅ Database schema creation
 
 ### Upcoming Features
 - 🔄 User authentication and registration
@@ -151,12 +153,11 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🎯 Next Steps
 
-1. Implement domain models with JPA annotations
-2. Add database schema and relationships
+1. Implement domain models with JPA annotations ✅
+2. Add database schema and relationships ✅
 3. Implement business logic in service classes
 4. Add validation and error handling
 5. Implement authentication and authorization
 6. Create comprehensive test suites
 7. Add CI/CD pipeline
 8. Deploy to production environment
-
