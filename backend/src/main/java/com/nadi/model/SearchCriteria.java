@@ -1,13 +1,7 @@
 package com.nadi.model;
 
 /**
- * Search criteria model for filtering venues and courts.
- * 
- * This model will contain search parameters such as:
- * - Location coordinates and radius
- * - Sport type preferences
- * - Date and time requirements
- * - Price range filters
+ * Search criteria for filtering venues and courts
  */
 public class SearchCriteria {
     // TODO: Add search criteria fields

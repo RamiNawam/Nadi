@@ -8,13 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Venue domain model representing a sports facility in Beirut.
- * 
- * This entity will contain venue information such as:
- * - Venue details (name, address, contact info)
- * - Available sports courts
- * - Operating hours
- * - Amenities and facilities
+ * Venue entity - represents a sports facility
  */
 @Entity
 @Table(name = "venues")

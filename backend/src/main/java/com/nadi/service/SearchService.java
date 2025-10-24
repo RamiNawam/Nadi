@@ -6,13 +6,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 /**
- * Business logic layer for Search operations.
- * 
- * This service will contain all search-related business logic:
- * - Advanced venue filtering
- * - Location-based search
- * - Multi-criteria search
- * - Search result ranking
+ * Search business logic
  */
 @Service
 public class SearchService {

@@ -7,12 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * REST controller for User-related endpoints.
- * 
- * This controller will expose HTTP endpoints for:
- * - User registration and login
- * - Profile management
- * - Account operations
+ * User endpoints
  */
 @RestController
 @RequestMapping("/users")

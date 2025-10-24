@@ -6,13 +6,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 /**
- * Business logic layer for Venue and Court operations.
- * 
- * This service will contain all venue-related business logic:
- * - Venue management
- * - Court availability checking
- * - Pricing calculations
- * - Venue search and filtering
+ * Venue business logic
  */
 @Service
 public class VenueService {

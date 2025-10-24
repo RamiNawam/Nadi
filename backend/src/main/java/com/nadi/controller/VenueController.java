@@ -8,12 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * REST controller for Venue-related endpoints.
- * 
- * This controller will expose HTTP endpoints for:
- * - Venue search and discovery
- * - Court availability checking
- * - Venue details and information
+ * Venue endpoints
  */
 @RestController
 @RequestMapping("/venues")

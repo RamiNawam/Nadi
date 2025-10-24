@@ -7,12 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * REST controller for Search-related endpoints.
- * 
- * This controller will expose HTTP endpoints for:
- * - Advanced venue search
- * - Location-based discovery
- * - Multi-criteria filtering
+ * Search endpoints
  */
 @RestController
 @RequestMapping("/search")

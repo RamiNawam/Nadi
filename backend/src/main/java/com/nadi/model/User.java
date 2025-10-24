@@ -7,13 +7,7 @@ import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
 
 /**
- * User domain model representing a registered user in the Nadi platform.
- * 
- * This entity will contain user information such as:
- * - Personal details (name, email, phone)
- * - Authentication credentials
- * - Profile preferences
- * - Account status and verification
+ * User entity for the platform
  */
 @Entity
 @Table(name = "users")
@@ -52,13 +46,11 @@ public class User {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
     
-    // Default constructor
     public User() {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
     
-    // Constructor with required fields
     public User(String name, String email, String phone, String password) {
         this();
         this.name = name;
@@ -66,8 +58,6 @@ public class User {
         this.phone = phone;
         this.password = password;
     }
-    
-    // Getters and Setters
     public Long getId() {
         return id;
     }

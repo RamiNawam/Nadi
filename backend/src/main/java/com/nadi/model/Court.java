@@ -6,13 +6,7 @@ import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
 
 /**
- * Court domain model representing individual sports courts within venues.
- * 
- * This entity will contain court information such as:
- * - Court type (football, basketball, padel, tennis)
- * - Court specifications and dimensions
- * - Pricing information
- * - Availability status
+ * Court entity - individual sports courts within venues
  */
 @Entity
 @Table(name = "courts")

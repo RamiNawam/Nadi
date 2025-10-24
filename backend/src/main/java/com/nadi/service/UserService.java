@@ -4,13 +4,7 @@ import com.nadi.model.User;
 import org.springframework.stereotype.Service;
 
 /**
- * Business logic layer for User operations.
- * 
- * This service will contain all user-related business logic:
- * - User registration and authentication
- * - Profile management
- * - Account verification
- * - User preferences handling
+ * User business logic
  */
 @Service
 public class UserService {

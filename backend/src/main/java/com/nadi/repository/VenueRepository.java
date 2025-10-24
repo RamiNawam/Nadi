@@ -5,12 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 /**
- * Data access layer for Venue entities.
- * 
- * This repository will handle all database operations related to venues:
- * - CRUD operations
- * - Location-based searches
- * - Venue filtering by sport type
+ * Venue data access
  */
 @Repository
 public interface VenueRepository extends JpaRepository<Venue, Long> {
