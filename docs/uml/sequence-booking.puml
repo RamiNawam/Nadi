@@ -1,0 +1,78 @@
+@startuml sequence-booking
+!theme plain
+title Nadi Booking Flow - Sequence Diagram
+
+actor User as "User"
+participant Frontend as "Frontend"
+participant ReservationController as "Reservation Controller"
+participant ReservationService as "Reservation Service"
+participant ReservationRepository as "Reservation Repository"
+participant PricingService as "Pricing Service"
+participant MongoDB as "MongoDB"
+participant Scheduler as "Scheduler"
+
+== Hold Creation ==
+User -> Frontend: Select court & time
+Frontend -> ReservationController: POST /reservations/hold
+ReservationController -> ReservationService: createHold(courtId, startTime, endTime, userId, playersCount)
+
+ReservationService -> ReservationRepository: findOverlappingReservations(courtId, startTime, endTime)
+ReservationRepository -> MongoDB: Query with compound index
+MongoDB --> ReservationRepository: No overlaps found
+ReservationRepository --> ReservationService: []
+
+ReservationService -> PricingService: calculatePrice(courtId, startTime, endTime)
+PricingService --> ReservationService: priceTotal
+
+ReservationService -> ReservationService: Create reservation with HELD status
+ReservationService -> ReservationService: Set holdExpiresAt = now + 15 minutes
+ReservationService -> ReservationRepository: save(reservation)
+ReservationRepository -> MongoDB: Insert reservation
+MongoDB --> ReservationRepository: Reservation saved
+ReservationRepository --> ReservationService: Saved reservation
+ReservationService --> ReservationController: Reservation with HELD status
+ReservationController --> Frontend: 201 Created
+Frontend --> User: Hold created (15 min to confirm)
+
+== Confirmation ==
+User -> Frontend: Confirm reservation
+Frontend -> ReservationController: POST /reservations/{id}/confirm
+ReservationController -> ReservationService: confirm(reservationId, userId)
+
+ReservationService -> ReservationRepository: findById(reservationId)
+ReservationRepository -> MongoDB: Find reservation
+MongoDB --> ReservationRepository: Reservation found
+ReservationRepository --> ReservationService: Reservation
+
+ReservationService -> ReservationService: Check user ownership
+ReservationService -> ReservationService: Check status is HELD
+ReservationService -> ReservationService: Check not expired
+ReservationService -> ReservationService: Update status to CONFIRMED
+ReservationService -> ReservationService: Clear holdExpiresAt
+ReservationService -> ReservationRepository: save(reservation)
+ReservationRepository -> MongoDB: Update reservation
+MongoDB --> ReservationRepository: Reservation updated
+ReservationRepository --> ReservationService: Updated reservation
+ReservationService --> ReservationController: Confirmed reservation
+ReservationController --> Frontend: 200 OK
+Frontend --> User: Reservation confirmed
+
+== Expiration (Background) ==
+loop Every minute
+    Scheduler -> ReservationService: expireHolds()
+    ReservationService -> ReservationRepository: findByHoldExpiresAtBefore(now)
+    ReservationRepository -> MongoDB: Query expired holds
+    MongoDB --> ReservationRepository: Expired reservations
+    ReservationRepository --> ReservationService: List of expired holds
+    
+    ReservationService -> ReservationService: Update status to EXPIRED
+    ReservationService -> ReservationRepository: saveAll(expiredReservations)
+    ReservationRepository -> MongoDB: Bulk update
+    MongoDB --> ReservationRepository: Updates completed
+end
+
+note over ReservationService, MongoDB : Uses MongoDB transactions\nfor race safety
+note over ReservationRepository : Compound index on\n(courtId, startTime, endTime)\nfor efficient overlap checking
+note over Scheduler : Scheduled job runs\nevery minute to expire holds
+
+@enduml

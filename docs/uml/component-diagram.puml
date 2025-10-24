@@ -1,0 +1,83 @@
+@startuml component-diagram
+!theme plain
+title Nadi Sports Venue Reservation - Component Diagram
+
+package "Frontend" {
+  [React App] as Frontend
+  [Search Page] as SearchPage
+  [Venue Page] as VenuePage
+  [Booking Flow] as BookingFlow
+}
+
+package "API Layer" {
+  [Search Controller] as SearchController
+  [Reservation Controller] as ReservationController
+  [Owner Controller] as OwnerController
+  [Developer Controller] as DeveloperController
+}
+
+package "Business Logic" {
+  [Search Service] as SearchService
+  [Reservation Service] as ReservationService
+  [Pricing Service] as PricingService
+  [Auth Service] as AuthService
+}
+
+package "Data Access" {
+  [User Repository] as UserRepo
+  [Venue Repository] as VenueRepo
+  [Court Repository] as CourtRepo
+  [Reservation Repository] as ReservationRepo
+}
+
+package "Infrastructure" {
+  database "MongoDB" as MongoDB {
+    [Venues Collection] as VenuesDB
+    [Users Collection] as UsersDB
+    [Courts Collection] as CourtsDB
+    [Reservations Collection] as ReservationsDB
+  }
+  
+  database "Redis" as Redis #lightblue
+}
+
+package "External Services" {
+  [Email Service] as EmailService #lightgray
+  [SMS Service] as SMSService #lightgray
+}
+
+' Frontend connections
+Frontend --> SearchController : HTTP/REST
+Frontend --> ReservationController : HTTP/REST
+Frontend --> OwnerController : HTTP/REST
+Frontend --> DeveloperController : HTTP/REST
+
+' Controller to Service connections
+SearchController --> SearchService
+ReservationController --> ReservationService
+OwnerController --> PricingService
+DeveloperController --> AuthService
+
+' Service to Repository connections
+SearchService --> VenueRepo
+SearchService --> CourtRepo
+ReservationService --> ReservationRepo
+ReservationService --> CourtRepo
+PricingService --> CourtRepo
+AuthService --> UserRepo
+
+' Repository to Database connections
+UserRepo --> UsersDB
+VenueRepo --> VenuesDB
+CourtRepo --> CourtsDB
+ReservationRepo --> ReservationsDB
+
+' External service connections (future)
+ReservationService ..> EmailService : notifications
+ReservationService ..> SMSService : notifications
+
+note right of MongoDB : Geospatial indexes\nfor location search
+note right of Redis : Optional for\nrate limiting & caching
+note bottom of EmailService : Future integration\nfor notifications
+
+@enduml

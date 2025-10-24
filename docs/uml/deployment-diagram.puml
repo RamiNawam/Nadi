@@ -1,0 +1,54 @@
+@startuml deployment-diagram
+!theme plain
+title Nadi Sports Venue Reservation - Deployment Diagram
+
+node "Frontend Host" as FrontendHost {
+  artifact "React App" as ReactApp
+  artifact "Nginx" as Nginx
+}
+
+node "API Host" as APIHost {
+  artifact "Spring Boot App" as SpringBoot
+  artifact "JVM" as JVM
+}
+
+node "Database Host" as DatabaseHost {
+  database "MongoDB" as MongoDB
+  artifact "MongoDB Replica Set" as MongoReplica
+}
+
+node "Cache Host" as CacheHost {
+  database "Redis" as Redis
+}
+
+node "External Services" as ExternalServices {
+  artifact "Email Service" as EmailService
+  artifact "SMS Service" as SMSService
+}
+
+cloud "CDN" as CDN {
+  artifact "Static Assets" as StaticAssets
+}
+
+cloud "Load Balancer" as LoadBalancer
+
+' Connections
+LoadBalancer --> FrontendHost : HTTPS
+LoadBalancer --> APIHost : HTTPS
+
+FrontendHost --> APIHost : API Calls
+APIHost --> DatabaseHost : Database Queries
+APIHost --> CacheHost : Cache Operations
+
+APIHost ..> ExternalServices : Notifications (Future)
+
+FrontendHost --> CDN : Static Assets
+
+' Deployment notes
+note top of FrontendHost : Static hosting\n(Vercel, Netlify, etc.)
+note top of APIHost : Container deployment\n(Docker, Kubernetes)
+note top of DatabaseHost : Managed MongoDB\n(MongoDB Atlas)
+note top of CacheHost : Optional Redis\nfor rate limiting
+note bottom of ExternalServices : Future integrations\nfor notifications
+
+@enduml

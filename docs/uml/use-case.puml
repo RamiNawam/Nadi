@@ -1,0 +1,60 @@
+@startuml use-case
+!theme plain
+title Nadi Sports Venue Reservation - Use Case Diagram
+
+left to right direction
+
+actor User as "User"
+actor VenueOwner as "Venue Owner"
+actor Developer as "Developer"
+actor SuperAdmin as "Super Admin"
+
+rectangle "Nadi Platform" {
+  usecase "Browse Venues" as UC1
+  usecase "Search Nearby Venues" as UC2
+  usecase "View Venue Details" as UC3
+  usecase "Check Court Availability" as UC4
+  usecase "Hold Court Reservation" as UC5
+  usecase "Confirm Reservation" as UC6
+  usecase "Cancel Reservation" as UC7
+  usecase "View My Reservations" as UC8
+  
+  usecase "Manage Venues" as UC9
+  usecase "Manage Courts" as UC10
+  usecase "Set Pricing Rules" as UC11
+  usecase "View Venue Bookings" as UC12
+  
+  usecase "Generate API Key" as UC13
+  usecase "Rotate API Key" as UC14
+  usecase "View API Usage" as UC15
+  
+  usecase "Manage Users" as UC16
+  usecase "System Administration" as UC17
+}
+
+User --> UC1
+User --> UC2
+User --> UC3
+User --> UC4
+User --> UC5
+User --> UC6
+User --> UC7
+User --> UC8
+
+VenueOwner --> UC9
+VenueOwner --> UC10
+VenueOwner --> UC11
+VenueOwner --> UC12
+
+Developer --> UC13
+Developer --> UC14
+Developer --> UC15
+
+SuperAdmin --> UC16
+SuperAdmin --> UC17
+
+note right of UC5 : Hold expires after 15 minutes
+note right of UC6 : Must confirm within hold period
+note right of UC2 : Uses MongoDB geospatial search
+
+@enduml

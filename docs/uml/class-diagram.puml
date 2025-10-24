@@ -1,0 +1,127 @@
+@startuml class-diagram
+!theme plain
+title Nadi Sports Venue Reservation - Class Diagram
+
+class User {
+  - String id : ObjectId
+  - String name
+  - String email : unique
+  - String phone : unique
+  - Role role
+  - LocalDateTime createdAt
+  + getName()
+  + getEmail()
+  + getRole()
+}
+
+class Venue {
+  - String id : ObjectId
+  - String name
+  - String phone
+  - String address
+  - String city
+  - String country
+  - GeoJsonPoint location : 2dsphere index
+  - Map<String,String> openingHours
+  - String ownerId
+  - LocalDateTime createdAt
+  + getLocation()
+  + getOwnerId()
+}
+
+class Sport {
+  - String id : ObjectId
+  - SportType name : enum
+  - int minPlayers
+  - int maxPlayers
+  - int defaultSlotMinutes
+  + getName()
+  + getMinPlayers()
+  + getMaxPlayers()
+}
+
+class Court {
+  - String id : ObjectId
+  - String venueId
+  - String sportId
+  - String name
+  - String surface
+  - int maxPlayers
+  - boolean isActive
+  + getVenueId()
+  + getSportId()
+}
+
+class CourtPriceRule {
+  - String id : ObjectId
+  - String courtId
+  - int dayOfWeek : 0-6
+  - String startTime : HH:mm
+  - String endTime : HH:mm
+  - BigDecimal pricePerSlot
+  - String currency
+  + getPricePerSlot()
+}
+
+class Reservation {
+  - String id : ObjectId
+  - String userId
+  - String courtId
+  - Instant startTime
+  - Instant endTime
+  - int playersCount
+  - BigDecimal priceTotal
+  - String currency
+  - ReservationStatus status : enum
+  - Instant createdAt
+  - Instant holdExpiresAt : indexed
+  + getStatus()
+  + isExpired()
+}
+
+class ApiKey {
+  - String id : ObjectId
+  - String userId
+  - String key : unique
+  - int rateLimit
+  - LocalDateTime createdAt
+  - LocalDateTime lastUsed
+  + getKey()
+  + getRateLimit()
+}
+
+enum Role {
+  USER
+  VENUE_OWNER
+  DEVELOPER
+  SUPERADMIN
+}
+
+enum SportType {
+  FOOTBALL
+  BASKETBALL
+  PADEL
+  TENNIS
+}
+
+enum ReservationStatus {
+  HELD
+  CONFIRMED
+  CANCELLED
+  EXPIRED
+}
+
+' Relationships
+User ||--o{ Reservation : "makes"
+Venue ||--o{ Court : "contains"
+Sport ||--o{ Court : "played on"
+Court ||--o{ CourtPriceRule : "has pricing"
+Court ||--o{ Reservation : "booked for"
+User ||--o{ Venue : "owns"
+User ||--o{ ApiKey : "has"
+
+note top of Venue : Uses MongoDB 2dsphere index\nfor geospatial queries
+note top of Reservation : Compound index on\n(courtId, startTime, endTime)\nfor overlap checking
+note top of User : Unique indexes on\nemail and phone
+
+@enduml

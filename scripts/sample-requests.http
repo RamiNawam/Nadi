@@ -1,0 +1,109 @@
+### Nadi API Sample Requests
+### Base URL: http://localhost:8080/api/v1
+
+### Get all sports
+GET {{baseUrl}}/sports
+
+### Search venues nearby
+GET {{baseUrl}}/venues?lat=33.8938&lon=35.5018&radius=5000&sport=FOOTBALL&minPrice=10&maxPrice=50&players=4
+
+### Get venue details
+GET {{baseUrl}}/venues/64f8a1b2c3d4e5f6a7b8c9d0
+
+### Check court availability
+GET {{baseUrl}}/courts/64f8a1b2c3d4e5f6a7b8c9d1/availability?date=2024-01-15
+
+### Create hold reservation
+POST {{baseUrl}}/reservations/hold
+Content-Type: application/json
+
+{
+  "courtId": "64f8a1b2c3d4e5f6a7b8c9d1",
+  "startTime": "2024-01-15T10:00:00Z",
+  "endTime": "2024-01-15T11:00:00Z",
+  "userId": "64f8a1b2c3d4e5f6a7b8c9d2",
+  "playersCount": 4
+}
+
+### Confirm reservation
+POST {{baseUrl}}/reservations/64f8a1b2c3d4e5f6a7b8c9d3/confirm
+Content-Type: application/json
+
+{
+  "userId": "64f8a1b2c3d4e5f6a7b8c9d2"
+}
+
+### Cancel reservation
+POST {{baseUrl}}/reservations/64f8a1b2c3d4e5f6a7b8c9d3/cancel
+Content-Type: application/json
+
+{
+  "userId": "64f8a1b2c3d4e5f6a7b8c9d2",
+  "reason": "Change of plans"
+}
+
+### Get my reservations
+GET {{baseUrl}}/reservations/my?userId=64f8a1b2c3d4e5f6a7b8c9d2
+
+### Owner: Create venue
+POST {{baseUrl}}/owner/venues
+Content-Type: application/json
+Authorization: Bearer {{ownerToken}}
+
+{
+  "name": "Beirut Sports Center",
+  "phone": "+961-1-234567",
+  "address": "Hamra Street, Beirut",
+  "latitude": 33.8938,
+  "longitude": 35.5018
+}
+
+### Owner: Create court
+POST {{baseUrl}}/owner/courts
+Content-Type: application/json
+Authorization: Bearer {{ownerToken}}
+
+{
+  "venueId": "64f8a1b2c3d4e5f6a7b8c9d0",
+  "sportId": "64f8a1b2c3d4e5f6a7b8c9d4",
+  "name": "Court 1",
+  "surface": "Synthetic",
+  "maxPlayers": 10
+}
+
+### Owner: Set pricing rules
+POST {{baseUrl}}/owner/courts/64f8a1b2c3d4e5f6a7b8c9d1/price-rules
+Content-Type: application/json
+Authorization: Bearer {{ownerToken}}
+
+{
+  "dayOfWeek": 1,
+  "startTime": "09:00",
+  "endTime": "17:00",
+  "pricePerSlot": 25.00
+}
+
+### Developer: Generate API key
+POST {{baseUrl}}/developer/api-key
+Content-Type: application/json
+Authorization: Bearer {{developerToken}}
+
+{
+  "userId": "64f8a1b2c3d4e5f6a7b8c9d5",
+  "rateLimit": 1000
+}
+
+### Developer: Rotate API key
+POST {{baseUrl}}/developer/api-key/rotate
+Content-Type: application/json
+Authorization: Bearer {{developerToken}}
+
+{
+  "userId": "64f8a1b2c3d4e5f6a7b8c9d5",
+  "oldKey": "ak_1234567890abcdef"
+}
+
+### Variables
+@baseUrl = http://localhost:8080/api/v1
+@ownerToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+@developerToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
