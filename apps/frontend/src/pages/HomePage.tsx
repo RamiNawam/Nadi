@@ -10,54 +10,54 @@ import React from 'react';
  */
 const HomePage: React.FC = () => {
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container" style={{ padding: '2rem 1rem', backgroundColor: '#f8fafc', minHeight: '100vh' }}>
       <div className="text-center">
-        <h1 className="text-4xl font-bold text-gray-900 mb-6">
+        <h1 style={{ fontSize: '2.5rem', fontWeight: 'bold', marginBottom: '1.5rem', color: '#1e293b' }}>
           Welcome to Nadi
         </h1>
         
-        <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+        <p style={{ fontSize: '1.25rem', marginBottom: '2rem', color: '#6b7280', maxWidth: '600px', margin: '0 auto 2rem auto' }}>
           Your premier destination for reserving sports courts in Beirut. 
           Find and book football, basketball, padel, and tennis courts 
           with ease.
         </p>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mt-12">
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1.5rem', marginTop: '3rem' }}>
           <div className="card text-center">
-            <div className="text-4xl mb-4">⚽</div>
-            <h3 className="text-lg font-semibold mb-2">Football</h3>
-            <p className="text-gray-600">
+            <div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>⚽</div>
+            <h3 style={{ fontSize: '1.125rem', fontWeight: '600', marginBottom: '0.5rem' }}>Football</h3>
+            <p style={{ color: '#6b7280' }}>
               Book football courts across Beirut
             </p>
           </div>
 
           <div className="card text-center">
-            <div className="text-4xl mb-4">🏀</div>
-            <h3 className="text-lg font-semibold mb-2">Basketball</h3>
-            <p className="text-gray-600">
+            <div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>🏀</div>
+            <h3 style={{ fontSize: '1.125rem', fontWeight: '600', marginBottom: '0.5rem' }}>Basketball</h3>
+            <p style={{ color: '#6b7280' }}>
               Reserve basketball courts near you
             </p>
           </div>
 
           <div className="card text-center">
-            <div className="text-4xl mb-4">🎾</div>
-            <h3 className="text-lg font-semibold mb-2">Tennis</h3>
-            <p className="text-gray-600">
+            <div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>🎾</div>
+            <h3 style={{ fontSize: '1.125rem', fontWeight: '600', marginBottom: '0.5rem' }}>Tennis</h3>
+            <p style={{ color: '#6b7280' }}>
               Find tennis courts for your matches
             </p>
           </div>
 
           <div className="card text-center">
-            <div className="text-4xl mb-4">🏓</div>
-            <h3 className="text-lg font-semibold mb-2">Padel</h3>
-            <p className="text-gray-600">
+            <div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>🏓</div>
+            <h3 style={{ fontSize: '1.125rem', fontWeight: '600', marginBottom: '0.5rem' }}>Padel</h3>
+            <p style={{ color: '#6b7280' }}>
               Discover padel courts in the city
             </p>
           </div>
         </div>
 
-        <div className="mt-12">
-          <button className="btn btn-primary mr-4">
+        <div style={{ marginTop: '3rem' }}>
+          <button className="btn btn-primary" style={{ marginRight: '1rem' }}>
             Find Venues
           </button>
           <button className="btn btn-secondary">

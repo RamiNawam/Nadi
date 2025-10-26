@@ -1,8 +1,10 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import HomePage from './pages/HomePage';
+import LandingPage from './pages/LandingPage';
 import SearchPage from './pages/SearchPage';
 import VenuePage from './pages/VenuePage';
+import CreateVenuePage from './pages/CreateVenuePage';
+import SportSearchPage from './pages/SportSearchPage';
 import Layout from './components/Layout';
 
 /**
@@ -13,9 +15,11 @@ const AppRouter: React.FC = () => {
     <Router>
       <Layout>
         <Routes>
-          <Route path="/" element={<HomePage />} />
+          <Route path="/" element={<LandingPage />} />
           <Route path="/search" element={<SearchPage />} />
+          <Route path="/search/:sport" element={<SportSearchPage />} />
           <Route path="/venue/:id" element={<VenuePage />} />
+          <Route path="/developer/create-venue" element={<CreateVenuePage />} />
         </Routes>
       </Layout>
     </Router>

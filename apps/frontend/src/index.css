@@ -1,4 +1,7 @@
 /* Global CSS styles for Nadi application */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 /* CSS Reset and Base Styles */
 * {
