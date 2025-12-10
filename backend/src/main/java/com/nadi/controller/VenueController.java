@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/v1/venues")
+@RequestMapping("/v1/venues")
 @CrossOrigin(origins = "*")
 public class VenueController {
 
@@ -35,7 +35,7 @@ public class VenueController {
 
     @GetMapping("/{id}")
     public ResponseEntity<VenueResponseDto> getVenue(@PathVariable String id) {
-        return venueService.findById(java.util.UUID.fromString(id))
+        return venueService.findById(id)
             .map(venue -> ResponseEntity.ok(mapToResponseDto(venue)))
             .orElse(ResponseEntity.notFound().build());
     }
@@ -71,7 +71,7 @@ public class VenueController {
     @PutMapping("/{id}")
     public ResponseEntity<VenueResponseDto> updateVenue(@PathVariable String id, @RequestBody VenueRequestDto request) {
         Venue venue = venueService.updateVenue(
-            java.util.UUID.fromString(id),
+            id,
             request.getName(),
             request.getAddress(),
             request.getLocation(),
@@ -82,7 +82,7 @@ public class VenueController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteVenue(@PathVariable String id) {
-        venueService.deleteVenue(java.util.UUID.fromString(id));
+        venueService.deleteVenue(id);
         return ResponseEntity.noContent().build();
     }
 

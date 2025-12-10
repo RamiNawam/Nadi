@@ -2,11 +2,13 @@ package com.nadi.controller;
 
 import com.nadi.dto.account.AccountRequestDto;
 import com.nadi.dto.account.AccountResponseDto;
+import com.nadi.dto.venue.VenueResponseDto;
 import com.nadi.model.Account;
 import com.nadi.model.DeveloperAccount;
 import com.nadi.model.UserAccount;
 import com.nadi.model.VenueAccount;
 import com.nadi.service.AccountService;
+import com.nadi.service.VenueService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,12 +20,15 @@ import java.util.Optional;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/accounts")
+@RequestMapping("/v1/accounts")
 @CrossOrigin(origins = "*")
 public class AccountController {
 
     @Autowired
     private AccountService accountService;
+
+    @Autowired
+    private VenueService venueService;
 
     @PostMapping("/users")
     public ResponseEntity<AccountResponseDto> createUserAccount(@RequestBody AccountRequestDto request) {
@@ -67,8 +72,10 @@ public class AccountController {
 
     @GetMapping
     public ResponseEntity<List<AccountResponseDto>> getAllAccounts() {
-        // This would need to be implemented in service if needed
-        return ResponseEntity.ok(new ArrayList<>());
+        List<AccountResponseDto> accounts = accountService.getAllAccounts().stream()
+            .map(account -> mapToResponseDto(account, getAccountType(account)))
+            .collect(java.util.stream.Collectors.toList());
+        return ResponseEntity.ok(accounts);
     }
 
     @PutMapping("/{id}/deactivate")
@@ -78,9 +85,15 @@ public class AccountController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteAccount(@PathVariable UUID id) {
-        accountService.deactivateAccount(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<?> deleteAccount(@PathVariable UUID id) {
+        try {
+            accountService.deleteAccount(id);
+            return ResponseEntity.noContent().build();
+        } catch (RuntimeException e) {
+            java.util.Map<String, String> error = new java.util.HashMap<>();
+            error.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+        }
     }
 
     private AccountResponseDto mapToResponseDto(Account account, String type) {
@@ -91,6 +104,23 @@ public class AccountController {
         dto.setPhone(account.getPhone());
         dto.setStatus(account.getStatus().toString());
         dto.setType(type);
+        
+        // For venue accounts, include venue information if available
+        if (account instanceof VenueAccount) {
+            VenueAccount venueAccount = (VenueAccount) account;
+            if (venueAccount.getVenue() != null) {
+                VenueResponseDto venueDto = new VenueResponseDto();
+                venueDto.setId(venueAccount.getVenue().getId()); // Venue ID is String
+                venueDto.setName(venueAccount.getVenue().getName());
+                venueDto.setAddress(venueAccount.getVenue().getAddress());
+                venueDto.setCafeteriaAvailable(venueAccount.getVenue().isCafeteriaAvailable());
+                if (venueAccount.getVenue().getLocation() != null) {
+                    venueDto.setLocation(venueAccount.getVenue().getLocation());
+                }
+                dto.setVenue(venueDto);
+            }
+        }
+        
         return dto;
     }
 

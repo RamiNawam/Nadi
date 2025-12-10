@@ -18,10 +18,11 @@ public abstract class Account {
     private String name;
     private String email;
     private String phone;
+    private String password; // Plain text for now (use BCrypt in production)
     private AccountStatus status = AccountStatus.ACTIVE;
 
-    public boolean authenticate() {
-        return true;
+    public boolean authenticate(String providedPassword) {
+        return password != null && password.equals(providedPassword);
     }
 
     public void deactivate() {

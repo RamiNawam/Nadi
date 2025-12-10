@@ -20,6 +20,11 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+/**
+ * Unit tests for VenueService using Mockito.
+ * NOTE: These tests use mocked repositories and do NOT interact with the real database.
+ * All data is mocked, so no cleanup is needed after tests run.
+ */
 @ExtendWith(MockitoExtension.class)
 class VenueServiceTest {
 

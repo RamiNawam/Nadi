@@ -16,6 +16,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -140,6 +142,18 @@ class AccountControllerTest {
 
         assertThat(response.getStatusCodeValue()).isEqualTo(204);
         verify(accountService).deactivateAccount(testId);
+    }
+
+    @Test
+    void testGetAllAccounts_Success() {
+        List<Account> accounts = Arrays.asList(testAccount);
+        when(accountService.getAllAccounts()).thenReturn(accounts);
+
+        ResponseEntity<List<AccountResponseDto>> response = accountController.getAllAccounts();
+
+        assertThat(response.getStatusCodeValue()).isEqualTo(200);
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody().size()).isEqualTo(1);
     }
 }
 

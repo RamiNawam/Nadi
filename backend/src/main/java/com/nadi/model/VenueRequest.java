@@ -17,6 +17,7 @@ import java.util.UUID;
 public class VenueRequest {
     @Id
     private UUID id;
+    private UUID venueAccountId; // Link to the venue account that created this request
     private OffsetDateTime submittedAt;
     private String status;
     private String venueName;

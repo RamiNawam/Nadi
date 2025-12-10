@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/v1/reservations")
+@RequestMapping("/v1/reservations")
 @CrossOrigin(origins = "*")
 public class ReservationController {
 
@@ -42,8 +42,10 @@ public class ReservationController {
 
     @GetMapping
     public ResponseEntity<List<ReservationResponseDto>> getAllReservations() {
-        // This would need a method in service to get all
-        return ResponseEntity.ok(List.of());
+        List<ReservationResponseDto> reservations = reservationService.getAllReservations().stream()
+            .map(this::mapToResponseDto)
+            .collect(Collectors.toList());
+        return ResponseEntity.ok(reservations);
     }
 
     @GetMapping("/user/{userId}")
@@ -81,14 +83,41 @@ public class ReservationController {
 
     @PutMapping("/{id}/cancel")
     public ResponseEntity<Void> cancelReservation(@PathVariable String id) {
-        reservationService.cancelReservation(java.util.UUID.fromString(id));
-        return ResponseEntity.ok().build();
+        try {
+            reservationService.cancelReservation(java.util.UUID.fromString(id));
+            return ResponseEntity.ok().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PutMapping("/{id}/reschedule")
+    public ResponseEntity<ReservationResponseDto> rescheduleReservation(
+        @PathVariable String id,
+        @RequestBody ReservationRequestDto request
+    ) {
+        try {
+            reservationService.updateReservationTime(
+                java.util.UUID.fromString(id),
+                request.getStartTime(),
+                request.getEndTime()
+            );
+            return reservationService.findById(java.util.UUID.fromString(id))
+                .map(reservation -> ResponseEntity.ok(mapToResponseDto(reservation)))
+                .orElse(ResponseEntity.notFound().build());
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteReservation(@PathVariable String id) {
-        reservationService.deleteReservation(java.util.UUID.fromString(id));
-        return ResponseEntity.noContent().build();
+        try {
+            reservationService.deleteReservation(java.util.UUID.fromString(id));
+            return ResponseEntity.noContent().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     private ReservationResponseDto mapToResponseDto(Reservation reservation) {

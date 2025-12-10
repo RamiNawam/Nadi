@@ -159,5 +159,57 @@ class ReservationControllerTest {
         assertThat(response.getStatusCodeValue()).isEqualTo(204);
         verify(reservationService).deleteReservation(testId);
     }
+
+    @Test
+    void testGetAllReservations_Success() {
+        List<Reservation> reservations = Arrays.asList(testReservation);
+        when(reservationService.getAllReservations()).thenReturn(reservations);
+
+        ResponseEntity<List<ReservationResponseDto>> response = reservationController.getAllReservations();
+
+        assertThat(response.getStatusCodeValue()).isEqualTo(200);
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody().size()).isEqualTo(1);
+    }
+
+    @Test
+    void testRescheduleReservation_Success() {
+        ReservationRequestDto rescheduleRequest = new ReservationRequestDto();
+        rescheduleRequest.setStartTime(OffsetDateTime.now().plusHours(3));
+        rescheduleRequest.setEndTime(OffsetDateTime.now().plusHours(5));
+
+        doNothing().when(reservationService).updateReservationTime(
+            any(), any(), any()
+        );
+        when(reservationService.findById(testId)).thenReturn(Optional.of(testReservation));
+
+        ResponseEntity<ReservationResponseDto> response = reservationController.rescheduleReservation(
+            testId.toString(),
+            rescheduleRequest
+        );
+
+        assertThat(response.getStatusCodeValue()).isEqualTo(200);
+        assertThat(response.getBody()).isNotNull();
+    }
+
+    @Test
+    void testCancelReservation_NotFound() {
+        doThrow(new RuntimeException("Reservation not found"))
+            .when(reservationService).cancelReservation(testId);
+
+        ResponseEntity<Void> response = reservationController.cancelReservation(testId.toString());
+
+        assertThat(response.getStatusCodeValue()).isEqualTo(404);
+    }
+
+    @Test
+    void testDeleteReservation_NotFound() {
+        doThrow(new RuntimeException("Reservation not found"))
+            .when(reservationService).deleteReservation(testId);
+
+        ResponseEntity<Void> response = reservationController.deleteReservation(testId.toString());
+
+        assertThat(response.getStatusCodeValue()).isEqualTo(404);
+    }
 }
 

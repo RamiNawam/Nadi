@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../store/authStore';
 
 interface Court {
   name: string;
@@ -22,10 +24,12 @@ interface OpeningHours {
 }
 
 /**
- * Developer page for creating new venues
- * Allows developers to create venues with sports, courts, pricing, and other settings
+ * Venue owner page for creating venue requests
+ * Allows venue owners to submit venue requests with sports, courts, pricing, and other settings
  */
-const CreateVenuePage: React.FC = () => {
+const CreateVenueRequestPage: React.FC = () => {
+  const navigate = useNavigate();
+  const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -38,7 +42,6 @@ const CreateVenuePage: React.FC = () => {
     city: 'Beirut',
     country: 'Lebanon',
     description: '',
-    ownerId: '', // Will be set to developer account
     courts: [] as Court[],
     openingHours: {
       Monday: '09:00-22:00',
@@ -118,20 +121,53 @@ const CreateVenuePage: React.FC = () => {
     setSuccess(false);
     setError(null);
 
+    if (!user?.id) {
+      setError('You must be logged in to create a venue request');
+      setLoading(false);
+      return;
+    }
+
+    if (formData.courts.length === 0) {
+      setError('Please add at least one court');
+      setLoading(false);
+      return;
+    }
+
     try {
-      // Prepare venue data - only send fields that the backend expects
-      // Note: We need location coordinates - using default Beirut coordinates for now
+      // Build the venue request payload - aggregate by sport
+      const numberOfCourts: Record<string, number> = {};
+      const playersPerCourt: Record<string, number> = {};
+      const pricePerHour: Record<string, { amount: number; currency: string }> = {};
+
+      formData.courts.forEach(court => {
+        if (court.sport) {
+          // Count courts per sport
+          numberOfCourts[court.sport] = (numberOfCourts[court.sport] || 0) + 1;
+          // Use average capacity (or first court's capacity) per sport
+          if (!playersPerCourt[court.sport]) {
+            playersPerCourt[court.sport] = court.capacity;
+          }
+          // Use average price (or first court's price) per sport
+          if (!pricePerHour[court.sport]) {
+            pricePerHour[court.sport] = {
+              amount: court.pricePerHour,
+              currency: 'USD'
+            };
+          }
+        }
+      });
+
       const submitData = {
-        name: formData.name,
+        venueAccountId: user.id,
+        venueName: formData.name,
         address: formData.address,
-        location: {
-          lat: 33.8938, // Default Beirut coordinates
-          lng: 35.5018
-        },
-        cafeteriaAvailable: false // Default, can be updated later
+        cafeteriaAvailable: false, // Default, can be updated later
+        numberOfCourts,
+        playersPerCourt,
+        pricePerHour
       };
 
-      const response = await fetch('http://localhost:8080/api/v1/venues', {
+      const response = await fetch('http://localhost:8080/api/v1/venue-requests', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -150,14 +186,17 @@ const CreateVenuePage: React.FC = () => {
           description: '',
           courts: []
         }));
+        setTimeout(() => {
+          navigate('/homeVenue');
+        }, 2000);
       } else {
-        const errorData = await response.json().catch(() => ({ message: 'Failed to create venue' }));
-        setError(errorData.message || 'Failed to create venue');
-        console.error('Failed to create venue:', errorData);
+        const errorData = await response.json().catch(() => ({ message: 'Failed to create venue request' }));
+        setError(errorData.message || 'Failed to create venue request');
+        console.error('Failed to create venue request:', errorData);
       }
     } catch (error) {
       setError('Network error. Please try again.');
-      console.error('Error creating venue:', error);
+      console.error('Error creating venue request:', error);
     } finally {
       setLoading(false);
     }
@@ -169,10 +208,10 @@ const CreateVenuePage: React.FC = () => {
     <div className="container" style={{ padding: '2rem 1rem', maxWidth: '800px' }}>
       <div style={{ marginBottom: '2rem' }}>
         <h1 style={{ fontSize: '2rem', fontWeight: 'bold', marginBottom: '0.5rem', color: '#1e293b' }}>
-          Create New Venue
+          Create Venue Request
         </h1>
         <p style={{ color: '#6b7280' }}>
-          Add a new sports venue with courts, pricing, and operating hours
+          Submit a request to add your sports venue with courts, pricing, and operating hours
         </p>
       </div>
 
@@ -185,7 +224,7 @@ const CreateVenuePage: React.FC = () => {
           marginBottom: '2rem',
           color: '#065f46'
         }}>
-          ✅ Venue created successfully!
+          ✅ Venue request submitted successfully! Redirecting...
         </div>
       )}
 
@@ -574,7 +613,7 @@ const CreateVenuePage: React.FC = () => {
               minWidth: '200px'
             }}
           >
-            {loading ? 'Creating Venue...' : 'Create Venue'}
+            {loading ? 'Submitting Request...' : 'Submit Request'}
           </button>
         </div>
       </form>
@@ -582,4 +621,4 @@ const CreateVenuePage: React.FC = () => {
   );
 };
 
-export default CreateVenuePage;
+export default CreateVenueRequestPage;

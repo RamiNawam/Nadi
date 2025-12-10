@@ -24,6 +24,11 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+/**
+ * Unit tests for AccountService using Mockito.
+ * NOTE: These tests use mocked repositories and do NOT interact with the real database.
+ * All data is mocked, so no cleanup is needed after tests run.
+ */
 @ExtendWith(MockitoExtension.class)
 class AccountServiceTest {
 
@@ -125,11 +130,24 @@ class AccountServiceTest {
     void testAuthenticate_Success() {
         UserAccount account = new UserAccount();
         account.setId(UUID.randomUUID());
+        account.setPassword("password");
         when(accountRepository.findByEmail(testEmail)).thenReturn(Optional.of(account));
 
         boolean result = accountService.authenticate(testEmail, "password");
 
         assertThat(result).isTrue();
+    }
+
+    @Test
+    void testAuthenticate_WrongPassword() {
+        UserAccount account = new UserAccount();
+        account.setId(UUID.randomUUID());
+        account.setPassword("correctpassword");
+        when(accountRepository.findByEmail(testEmail)).thenReturn(Optional.of(account));
+
+        boolean result = accountService.authenticate(testEmail, "wrongpassword");
+
+        assertThat(result).isFalse();
     }
 
     @Test

@@ -12,6 +12,7 @@ import com.nadi.repository.DeveloperAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -110,7 +111,22 @@ public class AccountService {
 
     public boolean authenticate(String email, String password) {
         Optional<Account> account = accountRepository.findByEmail(email);
-        return account.isPresent() && account.get().authenticate();
+        return account.isPresent() && account.get().authenticate(password);
+    }
+
+    public Account save(Account account) {
+        return accountRepository.save(account);
+    }
+
+    public List<Account> getAllAccounts() {
+        return accountRepository.findAll();
+    }
+
+    public void deleteAccount(UUID id) {
+        if (!accountRepository.existsById(id)) {
+            throw new RuntimeException("Account not found");
+        }
+        accountRepository.deleteById(id);
     }
 }
 

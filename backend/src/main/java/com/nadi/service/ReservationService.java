@@ -92,5 +92,9 @@ public class ReservationService {
         }
         reservationRepository.deleteById(id);
     }
+
+    public List<Reservation> getAllReservations() {
+        return reservationRepository.findAll();
+    }
 }
 

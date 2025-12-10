@@ -57,11 +57,18 @@ const HomePage: React.FC = () => {
         </div>
 
         <div style={{ marginTop: '3rem' }}>
-          <button className="btn btn-primary" style={{ marginRight: '1rem' }}>
+          <button 
+            className="btn btn-primary" 
+            style={{ marginRight: '1rem' }}
+            onClick={() => window.location.href = '/search'}
+          >
             Find Venues
           </button>
-          <button className="btn btn-secondary">
-            Learn More
+          <button 
+            className="btn btn-secondary"
+            onClick={() => window.location.href = '/signin'}
+          >
+            Sign In / Sign Up
           </button>
         </div>
       </div>

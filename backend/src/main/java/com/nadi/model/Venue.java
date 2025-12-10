@@ -14,7 +14,7 @@ import java.util.UUID;
 @Document("venues")
 public class Venue {
     @Id
-    private UUID id;
+    private String id; // Changed to String to handle both ObjectId and UUID
     private String name;
     private String address;
     private boolean cafeteriaAvailable;

@@ -18,7 +18,7 @@ public class VenueService {
 
     public Venue createVenue(String name, String address, GeoPoint location, boolean cafeteriaAvailable) {
         Venue venue = new Venue();
-        venue.setId(UUID.randomUUID());
+        venue.setId(UUID.randomUUID().toString()); // Convert UUID to String
         venue.setName(name);
         venue.setAddress(address);
         venue.setLocation(location);
@@ -27,7 +27,7 @@ public class VenueService {
         return venueRepository.save(venue);
     }
 
-    public Optional<Venue> findById(UUID id) {
+    public Optional<Venue> findById(String id) {
         return venueRepository.findById(id);
     }
 
@@ -43,7 +43,7 @@ public class VenueService {
         return venueRepository.findByAddressContainingIgnoreCase(address);
     }
 
-    public Venue updateVenue(UUID id, String name, String address, GeoPoint location, boolean cafeteriaAvailable) {
+    public Venue updateVenue(String id, String name, String address, GeoPoint location, boolean cafeteriaAvailable) {
         Optional<Venue> existing = venueRepository.findById(id);
         if (existing.isEmpty()) {
             throw new RuntimeException("Venue not found");
@@ -58,7 +58,7 @@ public class VenueService {
         return venueRepository.save(venue);
     }
 
-    public void deleteVenue(UUID id) {
+    public void deleteVenue(String id) {
         if (!venueRepository.existsById(id)) {
             throw new RuntimeException("Venue not found");
         }

@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/v1/courts")
+@RequestMapping("/v1/courts")
 @CrossOrigin(origins = "*")
 public class CourtController {
 

@@ -1,9 +1,13 @@
 package com.nadi.service;
 
+import com.nadi.model.GeoPoint;
 import com.nadi.model.Money;
 import com.nadi.model.SportType;
+import com.nadi.model.Venue;
+import com.nadi.model.VenueAccount;
 import com.nadi.model.VenueRequest;
 import com.nadi.repository.VenueRequestRepository;
+import com.nadi.repository.VenueAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,12 +23,32 @@ public class VenueRequestService {
     @Autowired
     private VenueRequestRepository venueRequestRepository;
 
-    public VenueRequest submitVenueRequest(String venueName, String address, boolean cafeteriaAvailable,
+    @Autowired
+    private VenueAccountRepository venueAccountRepository;
+
+    @Autowired
+    private VenueService venueService;
+
+    public VenueRequest submitVenueRequest(UUID venueAccountId, String venueName, String address, 
+                                          boolean cafeteriaAvailable,
                                           Map<SportType, Integer> numberOfCourts,
                                           Map<SportType, Integer> playersPerCourt,
                                           Map<SportType, Money> pricePerHour) {
+        // Check if venue account exists
+        Optional<VenueAccount> venueAccountOpt = venueAccountRepository.findById(venueAccountId);
+        if (venueAccountOpt.isEmpty()) {
+            throw new RuntimeException("Venue account not found");
+        }
+
+        // Check if venue account already has a pending request
+        List<VenueRequest> pendingRequests = venueRequestRepository.findByVenueAccountIdAndStatus(venueAccountId, "PENDING");
+        if (!pendingRequests.isEmpty()) {
+            throw new RuntimeException("You already have a pending venue request");
+        }
+
         VenueRequest request = new VenueRequest();
         request.setId(UUID.randomUUID());
+        request.setVenueAccountId(venueAccountId);
         request.setSubmittedAt(OffsetDateTime.now());
         request.setStatus("PENDING");
         request.setVenueName(venueName);
@@ -57,14 +81,50 @@ public class VenueRequestService {
         return venueRequestRepository.findByStatus("REJECTED");
     }
 
+    public List<VenueRequest> getRequestsByVenueAccount(UUID venueAccountId) {
+        return venueRequestRepository.findByVenueAccountId(venueAccountId);
+    }
+
+    public Optional<VenueRequest> getLatestRequestByVenueAccount(UUID venueAccountId) {
+        List<VenueRequest> requests = venueRequestRepository.findByVenueAccountIdOrderBySubmittedAtDesc(venueAccountId);
+        return requests.isEmpty() ? Optional.empty() : Optional.of(requests.get(0));
+    }
+
     public void approveRequest(UUID id) {
-        Optional<VenueRequest> request = venueRequestRepository.findById(id);
-        if (request.isEmpty()) {
+        Optional<VenueRequest> requestOpt = venueRequestRepository.findById(id);
+        if (requestOpt.isEmpty()) {
             throw new RuntimeException("Venue request not found");
         }
-        VenueRequest req = request.get();
-        req.approve();
-        venueRequestRepository.save(req);
+        VenueRequest request = requestOpt.get();
+        
+        // Check if venue account exists
+        Optional<VenueAccount> venueAccountOpt = venueAccountRepository.findById(request.getVenueAccountId());
+        if (venueAccountOpt.isEmpty()) {
+            throw new RuntimeException("Venue account not found");
+        }
+        VenueAccount venueAccount = venueAccountOpt.get();
+
+        // Check if venue account already has a venue
+        if (venueAccount.getVenue() != null) {
+            throw new RuntimeException("Venue account already has an approved venue");
+        }
+
+        // Create the venue from the request
+        GeoPoint location = new GeoPoint(33.8938, 35.5018); // Default Beirut coordinates
+        Venue venue = venueService.createVenue(
+            request.getVenueName(),
+            request.getAddress(),
+            location,
+            request.isCafeteriaAvailable()
+        );
+
+        // Link venue to venue account
+        venueAccount.setVenue(venue);
+        venueAccountRepository.save(venueAccount);
+
+        // Mark request as approved
+        request.approve();
+        venueRequestRepository.save(request);
     }
 
     public void rejectRequest(UUID id, String reason) {
@@ -75,6 +135,32 @@ public class VenueRequestService {
         VenueRequest req = request.get();
         req.reject(reason);
         venueRequestRepository.save(req);
+    }
+
+    public VenueRequest updateVenueRequest(UUID id, String venueName, String address, 
+                                          boolean cafeteriaAvailable,
+                                          Map<SportType, Integer> numberOfCourts,
+                                          Map<SportType, Integer> playersPerCourt,
+                                          Map<SportType, Money> pricePerHour) {
+        Optional<VenueRequest> requestOpt = venueRequestRepository.findById(id);
+        if (requestOpt.isEmpty()) {
+            throw new RuntimeException("Venue request not found");
+        }
+        VenueRequest request = requestOpt.get();
+        
+        // Only allow updates to PENDING requests
+        if (!"PENDING".equals(request.getStatus())) {
+            throw new RuntimeException("Can only update pending venue requests");
+        }
+
+        request.setVenueName(venueName);
+        request.setAddress(address);
+        request.setCafeteriaAvailable(cafeteriaAvailable);
+        request.setNumberOfCourts(numberOfCourts);
+        request.setPlayersPerCourt(playersPerCourt);
+        request.setPricePerHour(pricePerHour);
+
+        return venueRequestRepository.save(request);
     }
 }
 
