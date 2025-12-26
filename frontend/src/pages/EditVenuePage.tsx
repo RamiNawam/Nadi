@@ -149,7 +149,7 @@ const EditVenuePage: React.FC = () => {
           </div>
 
           {success && (
-            <div className="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded">
+            <div className="mb-4 p-4 bg-blue-100 border border-blue-400 text-blue-700 rounded">
               Venue information updated successfully! Redirecting...
             </div>
           )}
@@ -247,7 +247,7 @@ const EditVenuePage: React.FC = () => {
                 className={`px-6 py-2 rounded-md text-white ${
                   saving
                     ? 'bg-gray-400 cursor-not-allowed'
-                    : 'bg-indigo-600 hover:bg-indigo-700'
+                    : 'bg-blue-800 hover:bg-blue-900'
                 }`}
               >
                 {saving ? 'Saving...' : 'Save Changes'}

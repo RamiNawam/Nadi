@@ -33,7 +33,6 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode; requiredRole?: 'user
     }
 
     if (requiredRole && user?.accountType !== requiredRole) {
-      // Redirect to appropriate home based on account type
       switch (user?.accountType) {
         case 'user':
           navigate('/home', { replace: true });
@@ -66,7 +65,6 @@ const SignInGuard: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
   useEffect(() => {
     if (isAuthenticated && user) {
-      // Redirect based on account type
       switch (user.accountType) {
         case 'user':
           navigate('/home', { replace: true });
@@ -101,7 +99,6 @@ const RootRedirect: React.FC = () => {
     if (!isAuthenticated) {
       navigate('/homeGuest', { replace: true });
     } else {
-      // Redirect based on account type
       switch (user?.accountType) {
         case 'user':
           navigate('/home', { replace: true });

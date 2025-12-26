@@ -10,11 +10,8 @@ import org.springframework.stereotype.Component;
 import java.util.UUID;
 
 /**
- * DataInitializer creates initial data on application startup.
- * Currently creates a developer account for testing/admin purposes.
- * 
- * NOTE: This is the ONLY place that automatically creates data in the database.
- * All unit tests use mocked repositories and do NOT create real database records.
+ * Creates initial data on startup.
+ * Only place that automatically creates database records.
  */
 @Component
 public class DataInitializer implements CommandLineRunner {
@@ -24,7 +21,6 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        // Create developer account if it doesn't exist
         String devEmail = "RamiNawam@nadi.dev";
         if (accountRepository.findByEmail(devEmail).isEmpty()) {
             DeveloperAccount devAccount = new DeveloperAccount();

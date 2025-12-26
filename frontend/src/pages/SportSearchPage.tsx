@@ -1,35 +1,45 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { apiClient } from '../services/ApiClient';
 
 const SportSearchPage: React.FC = () => {
   const { sport } = useParams<{ sport: string }>();
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedArea, setSelectedArea] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [venues, setVenues] = useState<Array<{
+    id: string;
+    name: string;
+    address: string;
+    cafeteriaAvailable: boolean;
+    location?: { lat?: number; lng?: number };
+  }>>([]);
 
   const sportInfo = {
     football: {
       name: 'Football',
       icon: '⚽',
-      color: 'from-green-400 to-green-600',
+      color: 'from-blue-800 to-blue-900',
       description: 'Find football courts for your matches'
     },
     basketball: {
       name: 'Basketball',
       icon: '🏀',
-      color: 'from-orange-400 to-orange-600',
+      color: 'from-blue-800 to-blue-900',
       description: 'Discover basketball courts near you'
     },
     tennis: {
       name: 'Tennis',
       icon: '🎾',
-      color: 'from-yellow-400 to-yellow-600',
+      color: 'from-blue-800 to-blue-900',
       description: 'Reserve tennis courts for your games'
     },
     padel: {
       name: 'Padel',
       icon: '🏓',
-      color: 'from-blue-400 to-blue-600',
+      color: 'from-blue-800 to-blue-900',
       description: 'Book padel courts for your matches'
     }
   };
@@ -47,43 +57,36 @@ const SportSearchPage: React.FC = () => {
     'Badaro'
   ];
 
-  // Mock venues data
-  const mockVenues = [
-    {
-      id: 1,
-      name: `${currentSport?.name} Center Beirut`,
-      location: 'Downtown Beirut',
-      price: '25',
-      rating: 4.8,
-      distance: '0.5 km',
-      courts: 3,
-      image: `https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop&crop=center`
-    },
-    {
-      id: 2,
-      name: `Elite ${currentSport?.name} Club`,
-      location: 'Hamra',
-      price: '30',
-      rating: 4.6,
-      distance: '1.2 km',
-      courts: 2,
-      image: `https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop&crop=center`
-    },
-    {
-      id: 3,
-      name: `Beirut ${currentSport?.name} Arena`,
-      location: 'Achrafieh',
-      price: '20',
-      rating: 4.5,
-      distance: '2.1 km',
-      courts: 4,
-      image: `https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop&crop=center`
-    }
-  ];
+  useEffect(() => {
+    const fetchVenues = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const results = await apiClient.get<typeof venues>('/venues');
+        setVenues(results || []);
+      } catch (err) {
+        console.error(err);
+        setError('Failed to load venues. Please try again.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchVenues();
+  }, []);
 
-  const handleBookVenue = (venueId: number) => {
-    // Navigate to booking page or show booking modal
-    alert(`Booking ${mockVenues.find(v => v.id === venueId)?.name}`);
+  const filteredVenues = useMemo(() => {
+    return venues.filter(v => {
+      const matchesArea = selectedArea ? v.address?.toLowerCase().includes(selectedArea.toLowerCase()) : true;
+      const matchesSearch = searchTerm
+        ? v.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          v.address.toLowerCase().includes(searchTerm.toLowerCase())
+        : true;
+      return matchesArea && matchesSearch;
+    });
+  }, [venues, searchTerm, selectedArea]);
+
+  const handleBookVenue = (venueId: string) => {
+    navigate(`/venue/${venueId}`);
   };
 
   if (!currentSport) {
@@ -93,7 +96,7 @@ const SportSearchPage: React.FC = () => {
           <h1 className="text-4xl font-bold text-gray-800 mb-4">Sport Not Found</h1>
           <button 
             onClick={() => navigate('/')}
-            className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700"
+            className="bg-blue-800 text-white px-6 py-3 rounded-lg hover:bg-blue-900"
           >
             Back to Home
           </button>
@@ -146,7 +149,7 @@ const SportSearchPage: React.FC = () => {
                 ))}
               </select>
             </div>
-            <button className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors">
+            <button className="bg-blue-800 text-white px-6 py-3 rounded-lg hover:bg-blue-900 transition-colors">
               Search
             </button>
           </div>
@@ -157,46 +160,47 @@ const SportSearchPage: React.FC = () => {
       <div className="container mx-auto px-4 py-8">
         <div className="mb-6">
           <h2 className="text-2xl font-bold text-gray-800 mb-2">Available Venues</h2>
-          <p className="text-gray-600">Found {mockVenues.length} venues for {currentSport.name}</p>
+          <p className="text-gray-600">
+            {loading ? 'Loading venues...' : `Found ${filteredVenues.length} venues`}
+          </p>
+          {error && <p className="text-red-600 text-sm mt-1">{error}</p>}
         </div>
 
+        {!loading && filteredVenues.length === 0 && (
+          <div className="text-gray-600">No venues found. Try a different search.</div>
+        )}
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {mockVenues.map((venue) => (
+          {filteredVenues.map((venue) => (
             <div key={venue.id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
-              <div className="h-48 bg-gray-200 relative">
-                <img 
-                  src={venue.image} 
-                  alt={venue.name}
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute top-4 right-4 bg-white px-2 py-1 rounded-full text-sm font-semibold">
-                  {venue.distance}
-                </div>
+              <div className="h-48 bg-gray-200 relative flex items-center justify-center text-gray-500 text-sm">
+                {venue.location?.lat && venue.location?.lng
+                  ? `Lat: ${venue.location.lat.toFixed(3)}, Lng: ${venue.location.lng.toFixed(3)}`
+                  : 'Venue'}
               </div>
               
               <div className="p-6">
                 <h3 className="text-xl font-bold text-gray-800 mb-2">{venue.name}</h3>
-                <p className="text-gray-600 mb-3">{venue.location}</p>
+                <p className="text-gray-600 mb-3">{venue.address}</p>
                 
                 <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center">
-                    <span className="text-yellow-500 mr-1">★</span>
-                    <span className="font-semibold">{venue.rating}</span>
+                  <div className="text-sm text-gray-600">
+                    Cafeteria: {venue.cafeteriaAvailable ? 'Yes' : 'No'}
                   </div>
                   <div className="text-sm text-gray-600">
-                    {venue.courts} courts available
+                    ID: {venue.id.slice(0, 8)}...
                   </div>
                 </div>
 
                 <div className="flex items-center justify-between">
-                  <div className="text-2xl font-bold text-blue-600">
-                    ${venue.price}/hour
+                  <div className="text-lg font-semibold text-blue-600">
+                    {currentSport.name}
                   </div>
                   <button
                     onClick={() => handleBookVenue(venue.id)}
-                    className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                    className="bg-blue-800 text-white px-4 py-2 rounded-lg hover:bg-blue-900 transition-colors"
                   >
-                    Book Now
+                    View
                   </button>
                 </div>
               </div>
@@ -204,24 +208,6 @@ const SportSearchPage: React.FC = () => {
           ))}
         </div>
       </div>
-
-      {/* No Results */}
-      {mockVenues.length === 0 && (
-        <div className="container mx-auto px-4 py-16 text-center">
-          <div className="text-6xl mb-4">🔍</div>
-          <h3 className="text-2xl font-bold text-gray-800 mb-2">No venues found</h3>
-          <p className="text-gray-600 mb-6">Try adjusting your search criteria</p>
-          <button 
-            onClick={() => {
-              setSearchTerm('');
-              setSelectedArea('');
-            }}
-            className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            Clear Filters
-          </button>
-        </div>
-      )}
     </div>
   );
 };

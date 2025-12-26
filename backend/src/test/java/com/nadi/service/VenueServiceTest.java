@@ -19,11 +19,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.anyString;
 
 /**
- * Unit tests for VenueService using Mockito.
- * NOTE: These tests use mocked repositories and do NOT interact with the real database.
- * All data is mocked, so no cleanup is needed after tests run.
+ * Unit tests for VenueService.
+ * Uses mocked repositories - no database interaction.
  */
 @ExtendWith(MockitoExtension.class)
 class VenueServiceTest {
@@ -41,7 +41,7 @@ class VenueServiceTest {
     void setUp() {
         testLocation = new GeoPoint(33.8938, 35.5018);
         testVenue = new Venue();
-        testVenue.setId(UUID.randomUUID());
+        testVenue.setId(UUID.randomUUID().toString());
         testVenue.setName("Test Sports Center");
         testVenue.setAddress("123 Main St, Beirut");
         testVenue.setLocation(testLocation);
@@ -104,9 +104,9 @@ class VenueServiceTest {
 
     @Test
     void testUpdateVenue_NotFound() {
-        when(venueRepository.findById(any(UUID.class))).thenReturn(Optional.empty());
+        when(venueRepository.findById(anyString())).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> venueService.updateVenue(UUID.randomUUID(), "Name", "Address", testLocation, true))
+        assertThatThrownBy(() -> venueService.updateVenue(UUID.randomUUID().toString(), "Name", "Address", testLocation, true))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessageContaining("Venue not found");
     }
@@ -114,7 +114,7 @@ class VenueServiceTest {
     @Test
     void testDeleteVenue_Success() {
         when(venueRepository.existsById(testVenue.getId())).thenReturn(true);
-        doNothing().when(venueRepository).deleteById(any(UUID.class));
+        doNothing().when(venueRepository).deleteById(anyString());
 
         venueService.deleteVenue(testVenue.getId());
 
@@ -123,9 +123,9 @@ class VenueServiceTest {
 
     @Test
     void testDeleteVenue_NotFound() {
-        when(venueRepository.existsById(any(UUID.class))).thenReturn(false);
+        when(venueRepository.existsById(anyString())).thenReturn(false);
 
-        assertThatThrownBy(() -> venueService.deleteVenue(UUID.randomUUID()))
+        assertThatThrownBy(() -> venueService.deleteVenue(UUID.randomUUID().toString()))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessageContaining("Venue not found");
     }

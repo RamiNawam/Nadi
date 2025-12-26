@@ -56,11 +56,12 @@ class AuthControllerTest {
     void testLogin_Success() {
         when(authService.login(any(LoginRequestDto.class))).thenReturn(loginResponse);
 
-        ResponseEntity<LoginResponseDto> response = authController.login(loginRequest);
+        ResponseEntity<?> response = authController.login(loginRequest);
 
         assertThat(response.getStatusCodeValue()).isEqualTo(200);
-        assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().getEmail()).isEqualTo("john@example.com");
+        assertThat(response.getBody()).isInstanceOf(LoginResponseDto.class);
+        LoginResponseDto body = (LoginResponseDto) response.getBody();
+        assertThat(body.getEmail()).isEqualTo("john@example.com");
         verify(authService).login(any(LoginRequestDto.class));
     }
 
@@ -68,7 +69,7 @@ class AuthControllerTest {
     void testLogin_Unauthorized() {
         when(authService.login(any(LoginRequestDto.class))).thenThrow(new RuntimeException("Invalid credentials"));
 
-        ResponseEntity<LoginResponseDto> response = authController.login(loginRequest);
+        ResponseEntity<?> response = authController.login(loginRequest);
 
         assertThat(response.getStatusCodeValue()).isEqualTo(401);
     }
@@ -77,10 +78,10 @@ class AuthControllerTest {
     void testRegister_Success() {
         when(authService.register(any(RegisterRequestDto.class))).thenReturn(loginResponse);
 
-        ResponseEntity<LoginResponseDto> response = authController.register(registerRequest);
+        ResponseEntity<?> response = authController.register(registerRequest);
 
         assertThat(response.getStatusCodeValue()).isEqualTo(201);
-        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody()).isInstanceOf(LoginResponseDto.class);
         verify(authService).register(any(RegisterRequestDto.class));
     }
 
@@ -88,7 +89,7 @@ class AuthControllerTest {
     void testRegister_BadRequest() {
         when(authService.register(any(RegisterRequestDto.class))).thenThrow(new RuntimeException("Email already exists"));
 
-        ResponseEntity<LoginResponseDto> response = authController.register(registerRequest);
+        ResponseEntity<?> response = authController.register(registerRequest);
 
         assertThat(response.getStatusCodeValue()).isEqualTo(400);
     }

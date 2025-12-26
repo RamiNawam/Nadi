@@ -32,7 +32,7 @@ class VenueDtoTest {
     @Test
     void testVenueResponseDto_CompleteData() {
         VenueResponseDto response = new VenueResponseDto();
-        UUID testId = UUID.randomUUID();
+        String testId = UUID.randomUUID().toString();
         response.setId(testId);
         response.setName("Downtown Courts");
         response.setAddress("Downtown, Beirut");

@@ -114,7 +114,6 @@ const VenueCalendarPage: React.FC = () => {
     return reservations.filter(res => {
       const resStart = new Date(res.startTime);
       const resEnd = new Date(res.endTime);
-      // Check if reservation overlaps with this time slot
       return resStart < slotEnd && resEnd > slotStart;
     });
   };

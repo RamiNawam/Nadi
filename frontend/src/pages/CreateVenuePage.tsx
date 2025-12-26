@@ -95,7 +95,6 @@ const CreateVenuePage: React.FC = () => {
     }));
   };
 
-  // Remove court
   const removeCourt = (index: number) => {
     setFormData(prev => ({
       ...prev,
@@ -103,7 +102,6 @@ const CreateVenuePage: React.FC = () => {
     }));
   };
 
-  // Update opening hours
   const updateOpeningHours = (day: string, hours: string) => {
     setFormData(prev => ({
       ...prev,
@@ -111,7 +109,6 @@ const CreateVenuePage: React.FC = () => {
     }));
   };
 
-  // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);

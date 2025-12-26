@@ -18,9 +18,8 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 /**
- * Unit tests for AccountRepository using Mockito.
- * NOTE: These tests use mocked repositories and do NOT interact with the real database.
- * All data is mocked, so no cleanup is needed after tests run.
+ * Unit tests for AccountRepository.
+ * Uses mocked repositories - no database interaction.
  */
 @ExtendWith(MockitoExtension.class)
 class AccountRepositoryTest {

@@ -17,9 +17,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 /**
- * Unit tests for VenueRepository using Mockito.
- * NOTE: These tests use mocked repositories and do NOT interact with the real database.
- * All data is mocked, so no cleanup is needed after tests run.
+ * Unit tests for VenueRepository.
+ * Uses mocked repositories - no database interaction.
  */
 @ExtendWith(MockitoExtension.class)
 class VenueRepositoryTest {
@@ -32,7 +31,7 @@ class VenueRepositoryTest {
     @BeforeEach
     void setUp() {
         testVenue = new Venue();
-        testVenue.setId(UUID.randomUUID());
+        testVenue.setId(UUID.randomUUID().toString());
         testVenue.setName("Test Sports Center");
         testVenue.setAddress("123 Main St, Beirut");
         testVenue.setCafeteriaAvailable(true);

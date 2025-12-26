@@ -33,32 +33,27 @@ const DeveloperAdminPage: React.FC = () => {
   const [deletingAccountId, setDeletingAccountId] = useState<string | null>(null);
   const [deletingVenueId, setDeletingVenueId] = useState<string | null>(null);
   
-  // Pagination state
   const [currentAccountsPage, setCurrentAccountsPage] = useState(1);
   const accountsPerPage = 10;
   const [currentVenuesPage, setCurrentVenuesPage] = useState(1);
   const venuesPerPage = 10;
   
-  // Calculate pagination for accounts
   const totalAccountsPages = Math.ceil(accounts.length / accountsPerPage);
   const accountsStartIndex = (currentAccountsPage - 1) * accountsPerPage;
   const accountsEndIndex = accountsStartIndex + accountsPerPage;
   const currentAccounts = accounts.slice(accountsStartIndex, accountsEndIndex);
   
-  // Calculate pagination for venues
   const totalVenuesPages = Math.ceil(venues.length / venuesPerPage);
   const venuesStartIndex = (currentVenuesPage - 1) * venuesPerPage;
   const venuesEndIndex = venuesStartIndex + venuesPerPage;
   const currentVenues = venues.slice(venuesStartIndex, venuesEndIndex);
   
-  // Reset to last valid page when accounts list changes (e.g., after deletion)
   useEffect(() => {
     if (currentAccountsPage > totalAccountsPages && totalAccountsPages > 0) {
       setCurrentAccountsPage(totalAccountsPages);
     }
   }, [accounts.length, currentAccountsPage, totalAccountsPages]);
 
-  // Reset to last valid page when venues list changes (e.g., after deletion)
   useEffect(() => {
     if (currentVenuesPage > totalVenuesPages && totalVenuesPages > 0) {
       setCurrentVenuesPage(totalVenuesPages);
@@ -73,7 +68,6 @@ const DeveloperAdminPage: React.FC = () => {
     loadData();
   }, [user, navigate]);
 
-  // Handle hash navigation to scroll to specific sections
   useEffect(() => {
     const hash = window.location.hash;
     if (hash) {
@@ -82,7 +76,7 @@ const DeveloperAdminPage: React.FC = () => {
         if (element) {
           element.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
-      }, 500); // Wait for data to load
+      }, 500);
     }
   }, [accounts, venues]);
 
@@ -107,10 +101,8 @@ const DeveloperAdminPage: React.FC = () => {
         const venuesData = await venuesRes.json();
         setVenues(venuesData);
       } else {
-        // Don't show error if venues fail to load (likely ID type mismatch in DB)
-        // Just log it and show empty venues table
         const errorText = await venuesRes.text().catch(() => 'Unknown error');
-        console.warn('Failed to load venues (this is expected if venues have ObjectId instead of UUID):', errorText);
+        console.warn('Failed to load venues:', errorText);
         setVenues([]);
       }
 
@@ -124,18 +116,18 @@ const DeveloperAdminPage: React.FC = () => {
 
   const getAccountTypeBadge = (type: string) => {
     const colors = {
-      developer: 'bg-purple-100 text-purple-800',
+      developer: 'bg-blue-100 text-blue-800',
       venue: 'bg-blue-100 text-blue-800',
-      user: 'bg-green-100 text-green-800'
+      user: 'bg-blue-100 text-blue-800'
     };
     return colors[type as keyof typeof colors] || 'bg-gray-100 text-gray-800';
   };
 
   const getStatusBadge = (status: string) => {
     if (status === 'ACTIVE') {
-      return 'bg-green-100 text-green-800';
+      return 'bg-blue-100 text-blue-800';
     } else if (status === 'SUSPENDED') {
-      return 'bg-yellow-100 text-yellow-800';
+      return 'bg-gray-100 text-gray-800';
     } else {
       return 'bg-red-100 text-red-800';
     }
@@ -164,9 +156,7 @@ const DeveloperAdminPage: React.FC = () => {
       });
 
       if (response.ok || response.status === 204 || response.status === 200) {
-        // Remove from local state and reload data to ensure consistency
         setAccounts(accounts.filter(acc => acc.id !== accountId));
-        // Reload data to refresh the list
         await loadData();
       } else {
         let errorMessage = 'Failed to delete account';
@@ -204,9 +194,7 @@ const DeveloperAdminPage: React.FC = () => {
       });
 
       if (response.ok || response.status === 204 || response.status === 200) {
-        // Remove from local state and reload data to ensure consistency
         setVenues(venues.filter(venue => venue.id !== venueId));
-        // Reload data to refresh the list
         await loadData();
       } else {
         let errorMessage = 'Failed to delete venue';
@@ -277,7 +265,7 @@ const DeveloperAdminPage: React.FC = () => {
               <h2 className="text-2xl font-semibold text-gray-900">All Accounts</h2>
               <button
                 onClick={loadData}
-                className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 text-sm"
+                className="bg-blue-800 text-white px-4 py-2 rounded hover:bg-blue-900 text-sm"
               >
                 Refresh
               </button>
@@ -380,7 +368,7 @@ const DeveloperAdminPage: React.FC = () => {
                   className={`px-4 py-2 rounded text-sm font-medium ${
                     currentAccountsPage === 1
                       ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                      : 'bg-indigo-600 text-white hover:bg-indigo-700'
+                      : 'bg-blue-800 text-white hover:bg-blue-900'
                   }`}
                 >
                   Previous
@@ -405,7 +393,7 @@ const DeveloperAdminPage: React.FC = () => {
                         onClick={() => setCurrentAccountsPage(pageNum)}
                         className={`px-3 py-1 rounded text-sm ${
                           currentAccountsPage === pageNum
-                            ? 'bg-indigo-600 text-white font-medium'
+                            ? 'bg-blue-800 text-white font-medium'
                             : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                         }`}
                       >
@@ -421,7 +409,7 @@ const DeveloperAdminPage: React.FC = () => {
                   className={`px-4 py-2 rounded text-sm font-medium ${
                     currentAccountsPage === totalAccountsPages
                       ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                      : 'bg-indigo-600 text-white hover:bg-indigo-700'
+                      : 'bg-blue-800 text-white hover:bg-blue-900'
                   }`}
                 >
                   Next
@@ -442,7 +430,7 @@ const DeveloperAdminPage: React.FC = () => {
               <h2 className="text-2xl font-semibold text-gray-900">All Venues</h2>
               <button
                 onClick={loadData}
-                className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 text-sm"
+                className="bg-blue-800 text-white px-4 py-2 rounded hover:bg-blue-900 text-sm"
               >
                 Refresh
               </button>
@@ -490,7 +478,7 @@ const DeveloperAdminPage: React.FC = () => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         {venue.cafeteriaAvailable ? (
-                          <span className="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                          <span className="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
                             Yes
                           </span>
                         ) : (
@@ -534,7 +522,7 @@ const DeveloperAdminPage: React.FC = () => {
                   className={`px-4 py-2 rounded text-sm font-medium ${
                     currentVenuesPage === 1
                       ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                      : 'bg-indigo-600 text-white hover:bg-indigo-700'
+                      : 'bg-blue-800 text-white hover:bg-blue-900'
                   }`}
                 >
                   Previous
@@ -559,7 +547,7 @@ const DeveloperAdminPage: React.FC = () => {
                         onClick={() => setCurrentVenuesPage(pageNum)}
                         className={`px-3 py-1 rounded text-sm ${
                           currentVenuesPage === pageNum
-                            ? 'bg-indigo-600 text-white font-medium'
+                            ? 'bg-blue-800 text-white font-medium'
                             : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                         }`}
                       >
@@ -575,7 +563,7 @@ const DeveloperAdminPage: React.FC = () => {
                   className={`px-4 py-2 rounded text-sm font-medium ${
                     currentVenuesPage === totalVenuesPages
                       ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                      : 'bg-indigo-600 text-white hover:bg-indigo-700'
+                      : 'bg-blue-800 text-white hover:bg-blue-900'
                   }`}
                 >
                   Next

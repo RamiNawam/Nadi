@@ -30,7 +30,6 @@ const HomeVenue: React.FC = () => {
       if (!user?.id) return;
 
       try {
-        // Fetch venue account to check if it has a venue
         const accountResponse = await fetch(`http://localhost:8080/api/v1/accounts/${user.id}`);
         if (accountResponse.ok) {
           const accountData = await accountResponse.json();
@@ -40,7 +39,6 @@ const HomeVenue: React.FC = () => {
           }
         }
 
-        // Fetch latest venue request
         const requestResponse = await fetch(`http://localhost:8080/api/v1/venue-requests/my-requests/${user.id}/latest`);
         if (requestResponse.ok) {
           const requestData = await requestResponse.json();
@@ -67,7 +65,6 @@ const HomeVenue: React.FC = () => {
     );
   }
 
-  // If no approved venue, show create venue button
   if (!hasApprovedVenue) {
     return (
       <div className="min-h-screen bg-gray-50">
@@ -99,11 +96,11 @@ const HomeVenue: React.FC = () => {
               </p>
               
               {venueRequest?.status === 'PENDING' && (
-                <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-md">
-                  <p className="text-yellow-800">
+                <div className="mb-6 p-4 bg-gray-50 border border-gray-200 rounded-md">
+                  <p className="text-gray-800">
                     <strong>Status:</strong> Pending Approval
                   </p>
-                  <p className="text-sm text-yellow-700 mt-1">
+                  <p className="text-sm text-gray-700 mt-1">
                     Submitted on: {new Date(venueRequest.submittedAt).toLocaleDateString()}
                   </p>
                 </div>
@@ -123,7 +120,7 @@ const HomeVenue: React.FC = () => {
                 className={`px-6 py-3 rounded-md text-white font-medium ${
                   venueRequest?.status === 'PENDING'
                     ? 'bg-gray-400 cursor-not-allowed'
-                    : 'bg-indigo-600 hover:bg-indigo-700'
+                    : 'bg-blue-800 hover:bg-blue-900'
                 }`}
               >
                 {venueRequest?.status === 'PENDING' ? 'Request Pending' : 'Create My Venue'}
@@ -135,7 +132,6 @@ const HomeVenue: React.FC = () => {
     );
   }
 
-  // If approved, show dashboard with calendar and management options
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="container mx-auto px-4 py-12">
@@ -165,7 +161,7 @@ const HomeVenue: React.FC = () => {
             <p className="text-gray-600 mb-4">View and manage daily court bookings</p>
             <button
               onClick={() => navigate('/venue/calendar')}
-              className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700"
+              className="bg-blue-800 text-white px-4 py-2 rounded hover:bg-blue-900"
             >
               View Calendar
             </button>
@@ -176,7 +172,7 @@ const HomeVenue: React.FC = () => {
             <p className="text-gray-600 mb-4">Update your venue details and settings</p>
             <button
               onClick={() => navigate('/venue/edit')}
-              className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+              className="bg-blue-800 text-white px-4 py-2 rounded hover:bg-blue-900"
             >
               Edit Venue Information
             </button>

@@ -19,7 +19,7 @@ const HomeGuest: React.FC = () => {
           {!isAuthenticated && (
             <button
               onClick={() => navigate('/signin')}
-              className="bg-indigo-600 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-indigo-700 transition"
+              className="bg-blue-800 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-blue-900 transition"
             >
               Sign In to Book Courts
             </button>
@@ -33,7 +33,7 @@ const HomeGuest: React.FC = () => {
             <p className="text-gray-600 mb-4">Book football courts</p>
             <button
               onClick={() => navigate('/search/football')}
-              className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+              className="bg-blue-800 text-white px-4 py-2 rounded hover:bg-blue-900"
             >
               Book a Court
             </button>
@@ -45,7 +45,7 @@ const HomeGuest: React.FC = () => {
             <p className="text-gray-600 mb-4">Reserve basketball courts</p>
             <button
               onClick={() => navigate('/search/basketball')}
-              className="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600"
+              className="bg-blue-800 text-white px-4 py-2 rounded hover:bg-blue-900"
             >
               Book a Court
             </button>
@@ -57,7 +57,7 @@ const HomeGuest: React.FC = () => {
             <p className="text-gray-600 mb-4">Find tennis courts</p>
             <button
               onClick={() => navigate('/search/tennis')}
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+              className="bg-blue-800 text-white px-4 py-2 rounded hover:bg-blue-900"
             >
               Book a Court
             </button>
@@ -69,7 +69,7 @@ const HomeGuest: React.FC = () => {
             <p className="text-gray-600 mb-4">Discover padel courts</p>
             <button
               onClick={() => navigate('/search/padel')}
-              className="bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600"
+              className="bg-blue-800 text-white px-4 py-2 rounded hover:bg-blue-900"
             >
               Book a Court
             </button>
@@ -79,7 +79,7 @@ const HomeGuest: React.FC = () => {
         <div className="text-center">
           <button
             onClick={() => navigate('/search')}
-            className="bg-gray-800 text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-900 transition"
+            className="bg-blue-800 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-900 transition"
           >
             Browse All Venues
           </button>

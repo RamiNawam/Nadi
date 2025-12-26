@@ -136,12 +136,12 @@ class AccountControllerTest {
 
     @Test
     void testDeleteAccount_Success() {
-        doNothing().when(accountService).deactivateAccount(testId);
+        doNothing().when(accountService).deleteAccount(testId);
 
-        ResponseEntity<Void> response = accountController.deleteAccount(testId);
+        ResponseEntity<?> response = accountController.deleteAccount(testId);
 
         assertThat(response.getStatusCodeValue()).isEqualTo(204);
-        verify(accountService).deactivateAccount(testId);
+        verify(accountService).deleteAccount(testId);
     }
 
     @Test

@@ -72,9 +72,8 @@ const HomeDeveloper: React.FC = () => {
       });
 
       if (response.ok) {
-        // Remove from pending requests and reload
         setVenueRequests(prev => prev.filter(req => req.id !== requestId));
-        loadVenueRequests(); // Reload to update count
+        loadVenueRequests();
       } else {
         const errorData = await response.json().catch(() => ({ message: 'Failed to approve request' }));
         setError(errorData.message || 'Failed to approve venue request');
@@ -99,7 +98,6 @@ const HomeDeveloper: React.FC = () => {
       });
 
       if (response.ok) {
-        // Remove from pending requests
         setVenueRequests(prev => prev.filter(req => req.id !== requestId));
       } else {
         const errorData = await response.json().catch(() => ({ message: 'Failed to reject request' }));
@@ -120,8 +118,6 @@ const HomeDeveloper: React.FC = () => {
         const fullRequest = await response.json();
         setInspectingRequest(fullRequest);
         
-        // Convert request data to court format
-        // Since backend stores aggregated data, we'll create placeholder courts
         const courts: Court[] = [];
         if (fullRequest.numberOfCourts) {
           Object.keys(fullRequest.numberOfCourts).forEach(sport => {
@@ -286,7 +282,7 @@ const HomeDeveloper: React.FC = () => {
             <p className="text-gray-600 mb-4">Add a new sports venue to the platform</p>
             <button
               onClick={() => navigate('/developer/create-venue')}
-              className="bg-indigo-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-indigo-700 transition w-full"
+              className="bg-blue-800 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-900 transition w-full"
             >
               Create Venue
             </button>
@@ -297,7 +293,7 @@ const HomeDeveloper: React.FC = () => {
             <p className="text-gray-600 mb-4">View and manage all user accounts</p>
             <button
               onClick={() => navigate('/developer/admin#accounts')}
-              className="bg-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-purple-700 transition w-full"
+              className="bg-blue-800 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-900 transition w-full"
             >
               Manage Accounts
             </button>
@@ -308,7 +304,7 @@ const HomeDeveloper: React.FC = () => {
             <p className="text-gray-600 mb-4">View and manage all venues</p>
             <button
               onClick={() => navigate('/developer/admin#venues')}
-              className="bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition w-full"
+              className="bg-blue-800 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-900 transition w-full"
             >
               Manage Venues
             </button>
@@ -323,7 +319,7 @@ const HomeDeveloper: React.FC = () => {
             </div>
             <button
               onClick={loadVenueRequests}
-              className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 text-sm"
+              className="bg-blue-800 text-white px-4 py-2 rounded hover:bg-blue-900 text-sm"
             >
               Refresh
             </button>
@@ -377,7 +373,7 @@ const HomeDeveloper: React.FC = () => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm">
                         {request.cafeteriaAvailable ? (
-                          <span className="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                          <span className="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
                             Yes
                           </span>
                         ) : (
@@ -390,7 +386,7 @@ const HomeDeveloper: React.FC = () => {
                         <div className="flex gap-2">
                           <button
                             onClick={() => handleInspectRequest(request.id)}
-                            className="px-3 py-1 rounded text-xs font-medium bg-blue-600 text-white hover:bg-blue-700"
+                            className="px-3 py-1 rounded text-xs font-medium bg-blue-800 text-white hover:bg-blue-900"
                           >
                             Inspect
                           </button>
@@ -400,7 +396,7 @@ const HomeDeveloper: React.FC = () => {
                             className={`px-3 py-1 rounded text-xs font-medium ${
                               processingRequestId === request.id
                                 ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                                : 'bg-green-600 text-white hover:bg-green-700'
+                                : 'bg-blue-800 text-white hover:bg-blue-900'
                             }`}
                           >
                             {processingRequestId === request.id ? 'Processing...' : 'Approve'}
@@ -665,8 +661,8 @@ const HomeDeveloper: React.FC = () => {
                     <label className="text-sm font-medium text-gray-700">Status</label>
                     <p className="mt-1">
                       <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                        inspectingRequest.status === 'PENDING' ? 'bg-yellow-100 text-yellow-800' :
-                        inspectingRequest.status === 'APPROVED' ? 'bg-green-100 text-green-800' :
+                        inspectingRequest.status === 'PENDING' ? 'bg-gray-100 text-gray-800' :
+                        inspectingRequest.status === 'APPROVED' ? 'bg-blue-100 text-blue-800' :
                         'bg-red-100 text-red-800'
                       }`}>
                         {inspectingRequest.status}

@@ -34,13 +34,11 @@ public class VenueRequestService {
                                           Map<SportType, Integer> numberOfCourts,
                                           Map<SportType, Integer> playersPerCourt,
                                           Map<SportType, Money> pricePerHour) {
-        // Check if venue account exists
         Optional<VenueAccount> venueAccountOpt = venueAccountRepository.findById(venueAccountId);
         if (venueAccountOpt.isEmpty()) {
             throw new RuntimeException("Venue account not found");
         }
 
-        // Check if venue account already has a pending request
         List<VenueRequest> pendingRequests = venueRequestRepository.findByVenueAccountIdAndStatus(venueAccountId, "PENDING");
         if (!pendingRequests.isEmpty()) {
             throw new RuntimeException("You already have a pending venue request");
@@ -97,20 +95,17 @@ public class VenueRequestService {
         }
         VenueRequest request = requestOpt.get();
         
-        // Check if venue account exists
         Optional<VenueAccount> venueAccountOpt = venueAccountRepository.findById(request.getVenueAccountId());
         if (venueAccountOpt.isEmpty()) {
             throw new RuntimeException("Venue account not found");
         }
         VenueAccount venueAccount = venueAccountOpt.get();
 
-        // Check if venue account already has a venue
         if (venueAccount.getVenue() != null) {
             throw new RuntimeException("Venue account already has an approved venue");
         }
 
-        // Create the venue from the request
-        GeoPoint location = new GeoPoint(33.8938, 35.5018); // Default Beirut coordinates
+        GeoPoint location = new GeoPoint(33.8938, 35.5018);
         Venue venue = venueService.createVenue(
             request.getVenueName(),
             request.getAddress(),
@@ -118,11 +113,9 @@ public class VenueRequestService {
             request.isCafeteriaAvailable()
         );
 
-        // Link venue to venue account
         venueAccount.setVenue(venue);
         venueAccountRepository.save(venueAccount);
 
-        // Mark request as approved
         request.approve();
         venueRequestRepository.save(request);
     }
@@ -148,7 +141,6 @@ public class VenueRequestService {
         }
         VenueRequest request = requestOpt.get();
         
-        // Only allow updates to PENDING requests
         if (!"PENDING".equals(request.getStatus())) {
             throw new RuntimeException("Can only update pending venue requests");
         }

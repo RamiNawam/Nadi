@@ -30,7 +30,7 @@ const HomeUser: React.FC = () => {
             <h3 className="text-xl font-semibold mb-2">Football</h3>
             <button
               onClick={() => navigate('/search/football')}
-              className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 w-full"
+              className="bg-blue-800 text-white px-4 py-2 rounded hover:bg-blue-900 w-full"
             >
               Book a Court
             </button>
@@ -41,7 +41,7 @@ const HomeUser: React.FC = () => {
             <h3 className="text-xl font-semibold mb-2">Basketball</h3>
             <button
               onClick={() => navigate('/search/basketball')}
-              className="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600 w-full"
+              className="bg-blue-800 text-white px-4 py-2 rounded hover:bg-blue-900 w-full"
             >
               Book a Court
             </button>
@@ -52,7 +52,7 @@ const HomeUser: React.FC = () => {
             <h3 className="text-xl font-semibold mb-2">Tennis</h3>
             <button
               onClick={() => navigate('/search/tennis')}
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 w-full"
+              className="bg-blue-800 text-white px-4 py-2 rounded hover:bg-blue-900 w-full"
             >
               Book a Court
             </button>
@@ -63,7 +63,7 @@ const HomeUser: React.FC = () => {
             <h3 className="text-xl font-semibold mb-2">Padel</h3>
             <button
               onClick={() => navigate('/search/padel')}
-              className="bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600 w-full"
+              className="bg-blue-800 text-white px-4 py-2 rounded hover:bg-blue-900 w-full"
             >
               Book a Court
             </button>
@@ -78,7 +78,7 @@ const HomeUser: React.FC = () => {
         <div className="text-center">
           <button
             onClick={() => navigate('/search')}
-            className="bg-indigo-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-indigo-700 transition"
+            className="bg-blue-800 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-900 transition"
           >
             Browse All Venues
           </button>

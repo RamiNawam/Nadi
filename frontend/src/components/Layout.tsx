@@ -53,7 +53,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <Link to={isAuthenticated && user?.accountType === 'developer' ? '/homeDeveloper' : '/homeGuest'}>
-              <h1 className="text-2xl font-bold text-blue-600 cursor-pointer">Nadi</h1>
+              <h1 className="text-2xl font-bold text-blue-800 cursor-pointer">Nadi</h1>
             </Link>
             <nav className="flex space-x-6">
               {user?.accountType === 'developer' ? (
@@ -91,8 +91,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       {/* Footer */}
       <footer className="bg-gray-800 text-white py-8">
         <div className="container mx-auto px-4 text-center">
-          <p>&copy; 2024 Nadi. All rights reserved.</p>
-          <p className="mt-2 text-gray-400">
+          <p className="text-gray-400">
             Sports court reservation platform for Beirut
           </p>
         </div>

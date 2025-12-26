@@ -20,6 +20,7 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -33,11 +34,11 @@ class VenueControllerTest {
 
     private VenueRequestDto requestDto;
     private Venue testVenue;
-    private UUID testId;
+    private String testId;
 
     @BeforeEach
     void setUp() {
-        testId = UUID.randomUUID();
+        testId = UUID.randomUUID().toString();
         
         requestDto = new VenueRequestDto();
         requestDto.setName("Beirut Sports Center");
@@ -79,7 +80,7 @@ class VenueControllerTest {
     void testGetVenue_Exists() {
         when(venueService.findById(testId)).thenReturn(Optional.of(testVenue));
 
-        ResponseEntity<VenueResponseDto> response = venueController.getVenue(testId.toString());
+        ResponseEntity<VenueResponseDto> response = venueController.getVenue(testId);
 
         assertThat(response.getStatusCodeValue()).isEqualTo(200);
         assertThat(response.getBody()).isNotNull();
@@ -90,7 +91,7 @@ class VenueControllerTest {
     void testGetVenue_NotFound() {
         when(venueService.findById(testId)).thenReturn(Optional.empty());
 
-        ResponseEntity<VenueResponseDto> response = venueController.getVenue(testId.toString());
+        ResponseEntity<VenueResponseDto> response = venueController.getVenue(testId);
 
         assertThat(response.getStatusCodeValue()).isEqualTo(404);
     }
@@ -131,11 +132,11 @@ class VenueControllerTest {
 
     @Test
     void testUpdateVenue_Success() {
-        when(venueService.updateVenue(any(), anyString(), anyString(), any(), anyBoolean()))
+        when(venueService.updateVenue(anyString(), anyString(), anyString(), any(), anyBoolean()))
             .thenReturn(testVenue);
 
         ResponseEntity<VenueResponseDto> response = venueController.updateVenue(
-            testId.toString(),
+            testId,
             requestDto
         );
 
@@ -147,7 +148,7 @@ class VenueControllerTest {
     void testDeleteVenue_Success() {
         doNothing().when(venueService).deleteVenue(testId);
 
-        ResponseEntity<Void> response = venueController.deleteVenue(testId.toString());
+        ResponseEntity<Void> response = venueController.deleteVenue(testId);
 
         assertThat(response.getStatusCodeValue()).isEqualTo(204);
         verify(venueService).deleteVenue(testId);

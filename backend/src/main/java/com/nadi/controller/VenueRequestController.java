@@ -32,7 +32,6 @@ public class VenueRequestController {
             
             java.util.UUID venueAccountId = java.util.UUID.fromString(venueAccountIdStr);
             
-            // Convert Maps with String keys to Maps with SportType enum keys
             @SuppressWarnings("unchecked")
             Map<String, Object> numberOfCourtsMap = (Map<String, Object>) request.getOrDefault("numberOfCourts", new HashMap<>());
             @SuppressWarnings("unchecked")
@@ -78,7 +77,6 @@ public class VenueRequestController {
                         result.put(sportType, Integer.parseInt((String) value));
                     }
                 } catch (IllegalArgumentException e) {
-                    // Skip invalid sport types
                 }
             }
         }
@@ -108,12 +106,11 @@ public class VenueRequestController {
                         if (currency != null) {
                             money.setCurrency(currency.toString());
                         } else {
-                            money.setCurrency("USD"); // Default currency
+                            money.setCurrency("USD");
                         }
                         result.put(sportType, money);
                     }
                 } catch (IllegalArgumentException e) {
-                    // Skip invalid sport types
                 }
             }
         }
@@ -177,7 +174,6 @@ public class VenueRequestController {
         try {
             java.util.UUID requestId = java.util.UUID.fromString(id);
             
-            // Convert Maps with String keys to Maps with SportType enum keys
             @SuppressWarnings("unchecked")
             Map<String, Object> numberOfCourtsMap = (Map<String, Object>) request.getOrDefault("numberOfCourts", new HashMap<>());
             @SuppressWarnings("unchecked")
